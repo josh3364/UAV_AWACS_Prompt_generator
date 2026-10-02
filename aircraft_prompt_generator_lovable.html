@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AEW / EW 항공기 프롬프트 스튜디오</title>
+<style>
+:root{
+  color-scheme:light;
+  --bg:#f7f4ed;
+  --surface:#f7f4ed;
+  --surface-soft:#fcfbf8;
+  --text:#1c1c1c;
+  --text-strong:rgba(28,28,28,.83);
+  --muted:#5f5f5d;
+  --line:#eceae4;
+  --interactive:rgba(28,28,28,.40);
+  --tint:rgba(28,28,28,.04);
+  --tint-soft:rgba(28,28,28,.03);
+  --focus:rgba(59,130,246,.50);
+  --focus-shadow:rgba(0,0,0,.10) 0 4px 12px;
+  --button-shadow:rgba(255,255,255,.2) 0 .5px 0 inset,rgba(0,0,0,.2) 0 0 0 .5px inset,rgba(0,0,0,.05) 0 1px 2px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:"Camera Plain Variable",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:14px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+button,input,select,textarea{font:inherit;color:inherit}
+button,input,select,textarea,summary{transition:border-color .18s ease,background .18s ease,box-shadow .18s ease,opacity .18s ease,transform .18s ease}
+header{
+  position:relative;
+  overflow:hidden;
+  padding:88px max(24px,calc((100vw - 1200px)/2)) 64px;
+  border-bottom:1px solid var(--line);
+  background:
+    radial-gradient(circle at 12% 12%,rgba(243,171,145,.20),transparent 28%),
+    radial-gradient(circle at 86% 24%,rgba(139,174,224,.14),transparent 28%),
+    radial-gradient(circle at 62% 88%,rgba(236,192,141,.13),transparent 32%),
+    var(--bg);
+}
+header::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(to bottom,rgba(255,255,255,.08),transparent 60%)}
+header>*{position:relative;z-index:1}
+.eyebrow{
+  display:inline-flex;
+  align-items:center;
+  min-height:28px;
+  padding:5px 10px;
+  border:1px solid var(--line);
+  border-radius:9999px;
+  background:rgba(247,244,237,.72);
+  backdrop-filter:blur(8px);
+  color:var(--muted);
+  font-size:11px;
+  font-weight:400;
+  letter-spacing:.13em;
+}
+h1{
+  max-width:860px;
+  margin:20px 0 14px;
+  font-size:clamp(36px,5.2vw,60px);
+  line-height:1.03;
+  letter-spacing:clamp(-1.5px,-.02em,-.9px);
+  font-weight:600;
+}
+header p{max-width:760px;margin:0;color:var(--muted);font-size:18px;line-height:1.45}
+.layout{
+  max-width:1248px;
+  margin:0 auto;
+  padding:40px 24px 72px;
+  display:grid;
+  grid-template-columns:minmax(0,1.08fr) minmax(360px,.92fr);
+  gap:24px;
+  align-items:start;
+}
+.panel{
+  background:rgba(247,244,237,.84);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:24px;
+}
+.output{position:sticky;top:20px;align-self:start}
+.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+h2{font-size:20px;line-height:1.25;font-weight:400;margin:0 0 16px;letter-spacing:-.01em}
+h3{font-size:15px;line-height:1.3;font-weight:400;margin:22px 0 8px;color:var(--text-strong)}
+button{
+  appearance:none;
+  border:1px solid var(--interactive);
+  background:transparent;
+  color:var(--text);
+  border-radius:6px;
+  padding:8px 14px;
+  min-height:38px;
+  cursor:pointer;
+  font-weight:400;
+}
+button:hover{background:var(--tint)}
+button:active{opacity:.8;transform:translateY(1px)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:none;box-shadow:0 0 0 2px var(--focus),var(--focus-shadow)}
+.primary{
+  background:var(--text);
+  color:#fcfbf8;
+  border-color:var(--text);
+  box-shadow:var(--button-shadow);
+}
+.primary:hover{background:#242424}
+.settings{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0 18px}
+.settings label{color:var(--muted);font-size:12px}
+select,input[type=search],input[type=number],textarea{
+  width:100%;
+  border:1px solid var(--line);
+  border-radius:6px;
+  background:rgba(252,251,248,.72);
+  color:var(--text);
+  padding:10px 12px;
+}
+select:hover,input[type=search]:hover,input[type=number]:hover,textarea:hover{border-color:rgba(28,28,28,.18)}
+.settings select{margin-top:6px}
+textarea{resize:vertical;line-height:1.65;font-size:13px}
+#prompt{min-height:360px}
+#negative{min-height:125px}
+#extra{min-height:96px}
+.small{color:var(--muted);font-size:12px}
+label{cursor:pointer}
+.locked{
+  padding:12px 14px;
+  margin:18px 0 4px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--tint-soft);
+  color:var(--text-strong);
+  font-size:12px;
+}
+details{border-top:1px solid var(--line);padding:0}
+details:last-of-type{border-bottom:1px solid var(--line)}
+summary{
+  cursor:pointer;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  list-style:none;
+  padding:14px 2px;
+  font-weight:400;
+}
+summary::-webkit-details-marker{display:none}
+summary:before{
+  content:'+';
+  display:grid;
+  place-items:center;
+  width:22px;height:22px;
+  border:1px solid var(--line);
+  border-radius:9999px;
+  color:var(--text);
+  background:var(--surface-soft);
+  flex:0 0 auto;
+}
+details[open] summary:before{content:'−'}
+summary:hover{background:linear-gradient(to right,var(--tint-soft),transparent);padding-left:8px;padding-right:8px;border-radius:8px}
+summary span{margin-left:auto;color:var(--muted);font-size:12px;font-weight:400}
+.chips{display:flex;flex-wrap:wrap;gap:8px;padding:0 0 16px 32px}
+.chip input{position:absolute;opacity:0;width:1px;height:1px}
+.chip span{
+  display:block;
+  padding:6px 10px;
+  border:1px solid var(--line);
+  border-radius:9999px;
+  background:transparent;
+  color:var(--muted);
+  font-size:12px;
+}
+.chip span:hover{border-color:rgba(28,28,28,.22);background:var(--tint)}
+.chip input:checked+span{
+  background:var(--text);
+  border-color:var(--text);
+  color:#fcfbf8;
+  box-shadow:var(--button-shadow);
+}
+.chip input:focus-visible+span{box-shadow:0 0 0 2px var(--focus),var(--focus-shadow)}
+.stat{
+  color:var(--muted);
+  font-size:12px;
+  margin-left:auto;
+  padding:5px 9px;
+  border:1px solid var(--line);
+  border-radius:9999px;
+}
+.divider{border-top:1px solid var(--line);margin-top:22px;padding-top:18px}
+#status{min-height:24px;color:var(--text-strong);margin-top:10px;font-size:12px}
+.empty{padding:18px;color:var(--muted);text-align:center}
+.nav{margin-bottom:12px}.nav button{padding:7px 12px}.nav button.active{background:var(--text);color:#fcfbf8;border-color:var(--text)}
+footer{
+  max-width:1200px;
+  margin:0 auto 32px;
+  padding:22px 24px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  color:var(--muted);
+  font-size:12px;
+  background:linear-gradient(135deg,rgba(243,171,145,.08),rgba(139,174,224,.06),rgba(236,192,141,.06));
+}
+@media(max-width:900px){
+  header{padding:64px 24px 48px}
+  .layout{grid-template-columns:1fr;padding:24px 16px 56px;gap:16px}
+  .output{position:static}
+  .panel{padding:20px}
+  .settings{grid-template-columns:1fr 1fr}
+}
+@media(max-width:600px){
+  header{padding:48px 20px 38px}
+  h1{font-size:38px;letter-spacing:-.9px}
+  header p{font-size:16px}
+  .settings{grid-template-columns:1fr}
+  .chips{padding-left:0}
+  .toolbar>h2{width:100%;margin-bottom:2px}
+  footer{margin:0 16px 20px;padding:18px}
+}
+</style></head><body>
+<header><div class="eyebrow">NAVAL AVIATION / PROMPT STUDIO</div><h1>무인 AEW · EW 항공기 프롬프트 생성기</h1><p>항모 탑재형 고고도 무인기 한 대. 형상부터 실제 항공 촬영의 질감까지, 원하는 조건을 조합하세요.</p></header>
+<main class="layout"><section class="panel"><h2>01 / 장면 구성</h2><div class="toolbar"><button type="button" data-preset="photo" class="primary">실제 사진</button><button type="button" data-preset="future">미래형 기체</button><button type="button" data-preset="patrol">해상 감시</button><button type="button" id="reset">초기화</button></div>
+<div class="locked">고정 조건: 무인 고정익 항공기 한 대에 AEW&C와 전자전 기능 통합 · 비행 중 날개 전개 · 랜딩기어 수납</div>
+<div class="settings"><label>촬영 시점<select id="view"><option value="three-quarter front view, photographed slightly from below">전방 3/4 · 약간 아래에서</option><option value="side profile air-to-air view">측면 · 공대공 촬영</option><option value="rear three-quarter air-to-air view">후방 3/4</option><option value="elevated three-quarter view with ocean visible beneath">위에서 내려다보는 3/4</option></select></label><label>비행 동작<select id="action"><option value="maintaining a wide surveillance orbit at high altitude">고고도 감시 선회</option><option value="in level high-altitude cruise">고고도 수평 순항</option><option value="in a gentle banking turn during maritime patrol">해상 순찰 · 완만한 뱅크</option></select></label><label>렌즈<select id="lens"><option>300mm</option><option>400mm</option><option>200mm</option><option>85mm</option></select></label><label>출력 형식<select id="format"><option value="paragraph">영문 문단 프롬프트</option><option value="structured">구조화 프롬프트</option><option value="keywords">압축 키워드</option></select></label></div>
+<label for="search" class="small">키워드 검색 (한글 카테고리 / 영문 키워드)</label><input id="search" type="search" placeholder="예: 레이더, AESA, haze…"><div id="groups"></div>
+<label for="extra"><h3>추가 요구사항</h3></label><textarea id="extra" placeholder="영어로 입력하면 영문 결과에 자연스럽게 이어집니다. 예: faint aircraft identification markings, no text overlays"></textarea><p class="small">추가 문구는 입력한 언어 그대로 반영됩니다. 키워드를 변경하면 결과가 즉시 갱신됩니다.</p></section>
+<section class="panel output"><div class="toolbar"><h2>02 / 완성 프롬프트</h2><span id="count" class="stat"></span></div><p class="small">가상의 항공기 콘셉트를 실제 촬영 사진의 표현 방식으로 구성합니다.</p><label for="prompt" class="small">메인 프롬프트 · 직접 수정 가능</label><textarea id="prompt" spellcheck="false"></textarea><div class="toolbar" style="margin-top:10px"><button id="copy" class="primary">전체 복사</button><button id="regenerate">선택으로 다시 생성</button></div><label for="negative"><h3>네거티브 프롬프트 · 직접 수정 가능</h3></label><textarea id="negative" spellcheck="false"></textarea><p class="small">별도 네거티브 입력란이 있는 모델은 이 문구를 따로 붙여 넣으세요.</p>
+<div class="divider toolbar"><button id="md">MD 다운로드</button><button id="txt">TXT 다운로드</button><button id="save">설정 저장</button><button id="load">설정 불러오기</button></div><div id="status" role="status" aria-live="polite"></div><p class="small">단일 HTML 파일 · 외부 라이브러리 없음 · 오프라인 사용 가능<br>설정은 이 브라우저에 저장됩니다. 이 도구는 프롬프트를 생성합니다.</p></section></main><footer>AEW&C + EW / SINGLE UNMANNED AIRCRAFT — 첨부 키워드 14개 카테고리 기반</footer>
+<script>
+const groups=[{"name": "플랫폼", "title": "Core Subject / Platform", "items": ["carrier-based UAV", "high-altitude unmanned fixed-wing aircraft", "naval UAV", "unmanned surveillance aircraft", "carrier-compatible aircraft", "long-endurance UAV", "high-altitude persistent surveillance platform", "single integrated mission aircraft", "futuristic but realistic aircraft", "aerodynamically plausible design", "MQ-25-scale unmanned aircraft", "compact carrier-based surveillance aircraft"]}, {"name": "임무", "title": "Mission Role", "items": ["AEW&C", "airborne early warning and control", "electronic warfare", "EW", "wide-area surveillance", "maritime surveillance", "airspace surveillance", "target detection", "target tracking", "signals intelligence", "SIGINT", "ELINT", "ESM", "battle management", "tactical data-link relay", "sensor fusion", "maritime domain awareness", "airborne command and control"]}, {"name": "기체 형상", "title": "Airframe Design", "items": ["blended fuselage", "streamlined fuselage", "moderately swept wings", "high-aspect-ratio wings", "folding outer wing sections", "twin canted vertical stabilizers", "rear-mounted turbofan", "integrated turbofan engine", "low-observable shaping", "compact naval airframe", "stealth-influenced geometry", "realistic aerodynamic proportions", "reinforced naval structure", "corrosion-resistant navalized surfaces"]}, {"name": "레이더 · 센서", "title": "Radar / Sensor Systems", "items": ["AESA radar", "multi-band AESA radar", "conformal AESA radar", "distributed radar arrays", "dorsal radar array", "low-profile radar fairing", "conformal radar apertures", "side-looking radar arrays", "wing-root radar arrays", "fuselage-integrated radar", "electronic support measures", "ESM antennas", "ELINT antennas", "wideband RF apertures", "electronic warfare arrays", "SATCOM antenna", "secure tactical data-link antenna", "EO/IR sensor turret", "electro-optical infrared sensor", "communications antenna", "sensor apertures", "passive RF sensors"]}, {"name": "항모 운용", "title": "Carrier Compatibility", "items": ["carrier-based", "carrier-capable", "aircraft carrier operations", "folding wings", "reinforced landing gear", "naval landing gear", "arresting hook", "carrier-compatible dimensions", "catapult-compatible structure", "deck handling compatibility", "navalized airframe", "maritime corrosion protection", "compact storage footprint"]}, {"name": "비행 상태", "title": "Flight Condition / Action", "items": ["high-altitude flight", "surveillance orbit", "wide circular patrol orbit", "maritime patrol", "airborne surveillance mission", "persistent ISR mission", "landing gear retracted", "wings in flight configuration", "level cruise", "banking turn", "high-altitude loiter", "carrier strike group overwatch", "long-range surveillance", "operational flight"]}, {"name": "작전 환경", "title": "Environment", "items": ["open ocean", "maritime environment", "carrier strike group", "aircraft carrier below", "escort ships below", "layered clouds", "high-altitude cloud deck", "atmospheric haze", "ocean horizon", "deep blue-gray ocean", "distant naval task force", "sea mist", "overcast maritime atmosphere"]}, {"name": "카메라 · 구도", "title": "Camera / Composition", "items": ["air-to-air photography", "aviation photography", "documentary aviation photography", "three-quarter front view", "three-quarter low-angle view", "low-angle shot", "telephoto shot", "long-lens photography", "full aircraft in frame", "cinematic establishing shot", "realistic framing", "imperfect real-world composition", "strong sense of altitude", "realistic scale", "realistic perspective"]}, {"name": "카메라 설정", "title": "Camera Settings", "items": ["full-frame camera", "professional DSLR", "professional mirrorless camera", "300mm telephoto lens", "400mm telephoto lens", "f/5.6", "1/1600 sec", "ISO 200", "natural depth of field", "realistic lens compression", "autofocus tracking", "subtle camera shake", "slight background motion blur", "crisp subject focus"]}, {"name": "조명", "title": "Lighting", "items": ["overcast daylight", "diffused sunlight", "soft natural light", "dramatic clouds", "subtle rim light", "natural sunlight falloff", "realistic shadow softness", "physically accurate lighting", "low-contrast daylight", "muted naval atmosphere"]}, {"name": "표면 · 재질", "title": "Surface / Material Details", "items": ["matte naval gray", "low-observable coating", "radar-absorbent material", "RAM coating", "realistic composite surface", "panel lines", "access panels", "rivets", "panel gaps", "antenna housings", "maintenance marks", "subtle grime", "salt-weathering", "exhaust staining", "heat discoloration", "realistic heat distortion", "physically accurate reflections", "subtle surface imperfections"]}, {"name": "사진 사실감", "title": "Photorealism", "items": ["photorealistic", "ultra photorealistic", "realistic military aviation photography", "real airborne photograph", "documentary photography", "defense aerospace photography", "unedited photograph", "true-to-life colors", "realistic dynamic range", "realistic tonal response", "realistic white balance", "natural exposure", "subtle sensor noise", "natural digital grain", "realistic atmospheric perspective", "realistic humidity", "realistic haze", "cloud scattering", "physically accurate materials", "aerospace engineering realism", "physically plausible aerodynamics", "realistic scale", "real-world imperfections", "natural photographic sharpness"]}, {"name": "실사 강화", "title": "Anti-CGI / Real Photo Reinforcement", "items": ["not concept art", "not CGI", "not 3D render", "not illustration", "not promotional render", "no video game look", "no synthetic lighting", "no perfect studio lighting", "no plastic surface", "no excessive sharpness", "no artificial HDR", "no oversaturated colors", "no fantasy design"]}, {"name": "네거티브", "title": "Negative Prompt", "items": ["no cockpit", "no pilot", "no canopy", "no separate AWACS aircraft", "no escort aircraft dominating the frame", "no giant radar dome", "no rotating radar dish", "no oversized E-2 Hawkeye radome", "no fantasy spaceship", "no impossible wing geometry", "no exposed missiles", "no excessive weapons", "no glowing sci-fi elements", "no cartoon style", "no anime style", "no unrealistic stealth shape", "no CGI render", "no 3D model appearance", "no concept art", "no plastic-looking surfaces", "no perfect symmetry", "no excessive bloom", "no oversaturated colors"]}];
+const $=id=>document.getElementById(id);
+const initial=['carrier-based UAV','high-altitude unmanned fixed-wing aircraft','long-endurance UAV','aerodynamically plausible design','airborne early warning and control','electronic warfare','wide-area surveillance','target detection','tactical data-link relay','blended fuselage','moderately swept wings','high-aspect-ratio wings','twin canted vertical stabilizers','rear-mounted turbofan','distributed radar arrays','conformal AESA radar','low-profile radar fairing','ESM antennas','ELINT antennas','SATCOM antenna','secure tactical data-link antenna','EO/IR sensor turret','folding wings','reinforced landing gear','arresting hook','maritime corrosion protection','high-altitude flight','surveillance orbit','open ocean','carrier strike group','layered clouds','atmospheric haze','air-to-air photography','full aircraft in frame','realistic scale','full-frame camera','f/5.6','1/1600 sec','ISO 200','natural depth of field','realistic lens compression','crisp subject focus','overcast daylight','diffused sunlight','realistic shadow softness','matte naval gray','panel lines','access panels','maintenance marks','subtle grime','exhaust staining','photorealistic','real airborne photograph','true-to-life colors','realistic dynamic range','subtle sensor noise','natural digital grain','realistic atmospheric perspective','not CGI','not concept art','not 3D render','no artificial HDR','no oversaturated colors','no cockpit','no pilot','no canopy','no separate AWACS aircraft','no giant radar dome','no rotating radar dish','no fantasy spaceship','no impossible wing geometry','no exposed missiles','no glowing sci-fi elements','no cartoon style'];
+let selected=new Set(initial);
+function announce(t){$('status').textContent=t}
+function render(){const query=$('search').value.trim().toLowerCase();const root=$('groups');root.replaceChildren();let found=0;groups.forEach((g,i)=>{const items=g.items.filter(x=>(g.name+' '+g.title+' '+x).toLowerCase().includes(query));if(!items.length)return;found++;const d=document.createElement('details');d.open=!!query||i<2;const s=document.createElement('summary');s.append(document.createTextNode(String(i+1).padStart(2,'0')+' / '+g.name));const n=document.createElement('span');n.textContent=g.items.filter(x=>selected.has(x)).length+' / '+g.items.length;s.append(n);d.append(s);const box=document.createElement('div');box.className='chips';items.forEach(x=>{const label=document.createElement('label');label.className='chip';const input=document.createElement('input');input.type='checkbox';input.checked=selected.has(x);const text=document.createElement('span');text.textContent=x;input.addEventListener('change',()=>{input.checked?selected.add(x):selected.delete(x);n.textContent=g.items.filter(x=>selected.has(x)).length+' / '+g.items.length;generate()});label.append(input,text);box.append(label)});d.append(box);root.append(d)});if(!found){const p=document.createElement('p');p.className='empty';p.textContent='검색 결과가 없습니다.';root.append(p)}}
+function chosen(i){return groups[i].items.filter(x=>selected.has(x))}
+function generate(){
+const lens=$('lens').value;
+const chunks=[['Core subject','A single carrier-based high-altitude unmanned fixed-wing aircraft integrating airborne early warning and control (AEW&C) and electronic warfare in the same airframe. No cockpit, canopy or pilot.'],['Platform',chosen(0).join(', ')],['Mission',chosen(1).join(', ')],['Airframe',chosen(2).join(', ')],['Mission systems',chosen(3).join(', ')],['Carrier compatibility',chosen(4).join(', ')],['Flight condition','The aircraft is '+$('action').value+'. Landing gear fully retracted; folding outer wings fully extended and locked in flight configuration; arresting hook stowed. '+chosen(5).join(', ')],['Environment',chosen(6).join(', ')],['Camera and composition',$('view').value+'. '+chosen(7).join(', ')],['Camera settings','Shot from another aircraft using a '+lens+' telephoto lens. '+chosen(8).filter(x=>!/^\d+mm/.test(x)).join(', ')],['Lighting',chosen(9).join(', ')],['Surface and materials',chosen(10).join(', ')],['Photographic realism',chosen(11).join(', ')],['Real photograph treatment','A believable documentary aviation photograph with natural exposure, restrained surface detail and atmospheric perspective. '+chosen(12).join(', ')],['Additional direction',$('extra').value.trim()]].filter(([,v])=>v);
+let text;if($('format').value==='structured')text=chunks.map(([k,v])=>'['+k+']\n'+v).join('\n\n');else if($('format').value==='keywords')text=['single carrier-based high-altitude unmanned fixed-wing aircraft','integrated AEW&C and electronic warfare','no cockpit or canopy','landing gear retracted','wings fully extended','arresting hook stowed',...groups.slice(0,13).flatMap((g,i)=>chosen(i).filter(x=>!/^\d+mm/.test(x))),$('view').value,$('action').value,lens+' telephoto lens',$('extra').value.trim()].filter(Boolean).filter((x,i,a)=>a.indexOf(x)===i).join(', ');else text=chunks.map(([,v])=>v.replace(/[.,\s]+$/,'')+'.').join('\n\n');
+$('prompt').value=text;$('negative').value=[...new Set(['no cockpit','no pilot','no canopy','no separate AWACS aircraft',...chosen(12),...chosen(13)])].join(', ');updateCount();}
+function updateCount(){$('count').textContent=$('prompt').value.length.toLocaleString()+' 자 · '+selected.size+' 키워드'}
+function config(){return {version:1,selected:[...selected],view:$('view').value,action:$('action').value,lens:$('lens').value,format:$('format').value,extra:$('extra').value,prompt:$('prompt').value,negative:$('negative').value}}
+function download(ext){const body=ext==='md'?'# 무인 AEW · EW 항공기 이미지 프롬프트\n\n## Main prompt\n\n'+$('prompt').value+'\n\n## Negative prompt\n\n'+$('negative').value:'MAIN PROMPT\n\n'+$('prompt').value+'\n\nNEGATIVE PROMPT\n\n'+$('negative').value;const url=URL.createObjectURL(new Blob([body],{type:ext==='md'?'text/markdown;charset=utf-8':'text/plain;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='carrier_uav_prompt.'+ext;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);announce(ext.toUpperCase()+' 파일을 다운로드했습니다.')}
+$('search').addEventListener('input',render);['view','action','lens','format'].forEach(id=>$(id).addEventListener('change',generate));$('extra').addEventListener('input',generate);$('prompt').addEventListener('input',updateCount);$('regenerate').onclick=()=>{generate();announce('선택한 조건으로 다시 생성했습니다.')};$('md').onclick=()=>download('md');$('txt').onclick=()=>download('txt');
+$('copy').onclick=async()=>{const text=$('prompt').value+'\n\nNegative prompt: '+$('negative').value;try{await navigator.clipboard.writeText(text);announce('전체 프롬프트를 복사했습니다.')}catch{const temp=document.createElement('textarea');temp.value=text;temp.style.position='fixed';temp.style.top='0';document.body.append(temp);temp.select();let ok=false;try{ok=document.execCommand('copy')}catch{}temp.remove();if(ok)announce('전체 프롬프트를 복사했습니다.');else{$('prompt').focus();$('prompt').select();announce('자동 복사가 차단되었습니다. 선택된 메인 프롬프트를 Ctrl/Cmd+C로 복사하세요.')}}};
+function preset(mode){selected=new Set(initial);$('view').selectedIndex=0;$('action').selectedIndex=0;$('lens').value='300mm';$('format').value='paragraph';$('extra').value='';if(mode==='future'){['low-observable shaping','stealth-influenced geometry','wing-root radar arrays','fuselage-integrated radar','multi-band AESA radar','passive RF sensors','subtle rim light'].forEach(x=>selected.add(x));$('extra').value='Futuristic but physically plausible naval UAV design, with restrained engineering details.'}if(mode==='patrol'){['maritime surveillance','target tracking','signals intelligence','maritime domain awareness','escort ships below','ocean horizon','sea mist'].forEach(x=>selected.add(x));$('action').selectedIndex=2;$('view').selectedIndex=3}render();generate();announce('프리셋을 적용했습니다.')}
+document.querySelectorAll('[data-preset]').forEach(b=>b.onclick=()=>preset(b.dataset.preset));$('reset').onclick=()=>{preset('photo');$('search').value='';render();announce('기본 실사 설정으로 초기화했습니다.')};
+$('save').onclick=()=>{try{localStorage.setItem('naval-prompt-studio-v1',JSON.stringify(config()));announce('현재 설정과 편집한 프롬프트를 저장했습니다.')}catch{announce('이 브라우저에서는 설정을 저장할 수 없습니다. MD 또는 TXT 다운로드를 이용하세요.')}};
+$('load').onclick=()=>{try{const raw=localStorage.getItem('naval-prompt-studio-v1');if(!raw){announce('저장된 설정이 없습니다.');return}const c=JSON.parse(raw);if(c.version!==1||!Array.isArray(c.selected))throw new Error('Invalid');const valid=new Set(groups.flatMap(g=>g.items));selected=new Set(c.selected.filter(x=>valid.has(x)));['view','action','lens','format'].forEach(id=>{if([...$(id).options].some(o=>o.value===c[id]))$(id).value=c[id]});$('extra').value=typeof c.extra==='string'?c.extra:'';render();generate();if(typeof c.prompt==='string')$('prompt').value=c.prompt;if(typeof c.negative==='string')$('negative').value=c.negative;updateCount();announce('저장한 설정과 프롬프트를 불러왔습니다.')}catch{announce('설정을 불러올 수 없습니다. 저장 데이터 또는 브라우저 권한을 확인하세요.')}};
+render();generate();
+</script></body></html>
